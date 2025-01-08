@@ -1,36 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  MdOutlineKeyboardArrowDown,
+  MdOutlineKeyboardArrowUp,
+} from "react-icons/md";
 
 const ProductLeft = ({ categoryData, isLoading }) => {
+  const [openDropdown, setOpenDropdown] = useState(null);
+  // handlesubcategory
+  const handlesubcategory = (id) => {
+    setOpenDropdown(openDropdown === id ? null : id);
+  };
   return (
     <div className="w-[23%] border-r-[1.5px] border-r-text_black7D8184">
       <h1 className="font-popins font-bold text-[20px] text-text_black000000 mb-4 cursor-pointer">
         Shop By Category
       </h1>
-      {isLoading ? (
-        <ul>
-          {/* Simulate 5 loading skeleton items */}
-          {Array(10)
-            .fill("")
-            .map((_, index) => (
+
+      <div className=" pt-10 border-r-[1.5px] border-r-text_black7D8184">
+        {isLoading ? (
+          <ul>
+            {[...new Array(9)]?.map((_, index) => (
               <div
+                className="flex items-center justify-between hover:bg-gray-200 transition-all cursor-pointer "
                 key={index}
-                className="flex items-center justify-between hover:bg-gray-200 transition-all"
               >
-                <li className="flex animate-pulse bg-gray-300 rounded w-full py-4 my-3"></li>
+                <li className="bg-text_black7D8184 w-full font-normal py-6 cursor-pointer my-2 animate-pulse mr-3 rounded"></li>
               </div>
             ))}
-        </ul>
-      ) : (
-        <ul>
-          {categoryData?.map((item) => (
-            <div className="flex items-center justify-between hover:bg-gray-200 transition-all">
-              <li className="font-popins hover:px-5 transition-all text-md text-text_black000000 font-normal py-3 cursor-pointer capitalize">
-                {item}
-              </li>
-            </div>
-          ))}
-        </ul>
-      )}
+          </ul>
+        ) : (
+          <ul>
+            {categoryData?.map((item) => (
+              <div
+                className="flex items-center justify-between hover:bg-gray-200 transition-all cursor-pointer"
+                onClick={() => handlesubcategory(item._id)}
+              >
+                <li className="font-popins hover:px-5 transition-all text-md text-text_black000000 font-normal py-3 cursor-pointer">
+                  {item.name}
+                  {openDropdown === item._id &&
+                    item.subcategory.map((subItem) => (
+                      <div
+                        key={subItem._id}
+                        className="flex flex-col hover:bg-blue-200 transition-all bg-gray-300 my-2 mr-10 "
+                      >
+                        <li className="font-popins hover:px-5 transition-all text-md text-text_black000000 font-normal py-3 cursor-pointer">
+                          {subItem.name}
+                        </li>
+                      </div>
+                    ))}
+                </li>
+                {item.subcategory && (
+                  <span className="pr-10 text-xl text-text_black000000">
+                    {openDropdown === item._id ? (
+                      <MdOutlineKeyboardArrowUp />
+                    ) : (
+                      <MdOutlineKeyboardArrowDown />
+                    )}
+                  </span>
+                )}
+              </div>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <div>
         <h1 className="font-popins font-bold text-[20px] text-text_black000000 mb-4 mt-4 cursor-pointer">

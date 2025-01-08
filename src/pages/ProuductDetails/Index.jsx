@@ -7,21 +7,16 @@ import { useParams } from "react-router-dom";
 import ProductDetailsSkeletion from "../../components/Skeletion/ProductDetailsSkeletion.jsx";
 import Heading from "../../components/CommonCoponents/Heading.jsx";
 import Slider from "react-slick";
-import {
-  useGetSingleProductQuery,
-  useGetProductByCategoryQuery,
-} from "../../Features/Api/ProductApi.js";
+import { useGetSingleProductQuery } from "../../Features/Api/exclusiveApi.js";
 import ProductCard from "../../components/CommonCoponents/ProductCard.jsx";
 const ProductDetails = () => {
   const params = useParams();
-  const { data, error, isLoading } = useGetSingleProductQuery(
-    parseInt(params?.id)
-  );
+  const { data, error, isLoading } = useGetSingleProductQuery(params?.id);
   /**
    * todo : useGetProductByCategoryQuery query invoked
    */
 
-  const categoryData = useGetProductByCategoryQuery(data?.category);
+  // const categoryData = useGetProductByCategoryQuery(data?.category);
 
   var settings = {
     dots: true,
@@ -31,6 +26,8 @@ const ProductDetails = () => {
     slidesToScroll: 3,
     dots: false,
   };
+
+
 
   return (
     <div className="py-20">
@@ -43,10 +40,10 @@ const ProductDetails = () => {
 
             <div className="grid grid-cols-2 gap-x-[70px]">
               <div className="">
-                <ImageGallery image={data?.images} />
+                <ImageGallery image={data?.data?.image} />
               </div>
               <div className="w-full ">
-                <SpecificProductDetails ProductDetailsData={data} />
+                <SpecificProductDetails ProductDetailsData={data?.data} />
               </div>
             </div>
           </div>
@@ -56,11 +53,11 @@ const ProductDetails = () => {
         <div className="py-[140px]">
           <Heading title="Related Item" description={false} />
           <Slider {...settings}>
-            {categoryData?.data?.products?.map((item) => (
+            {/* {categoryData?.data?.products?.map((item) => (
               <div className="mx-4">
                 <ProductCard itemData={item} />
               </div>
-            ))}
+            ))} */}
           </Slider>
         </div>
         {/* related product */}

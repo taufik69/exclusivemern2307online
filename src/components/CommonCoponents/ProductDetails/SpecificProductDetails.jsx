@@ -5,7 +5,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import useCalculateDiscount from "../../../hooks/useCalculateDiscount";
 const SpecificProductDetails = ({ ProductDetailsData }) => {
   const {
-    title,
+    name,
     description,
     rating,
     price,
@@ -28,7 +28,7 @@ const SpecificProductDetails = ({ ProductDetailsData }) => {
     <div>
       <div className="">
         <h2 className="text-2xl font-semibold font-inter text-text_black000000">
-          {title || "Havic HV G-92 Gamepad"}
+          {name || "Havic HV G-92 Gamepad"}
         </h2>
         <div className="flex items-start gap-x-3 mt-4">
           <Star rating={rating} />

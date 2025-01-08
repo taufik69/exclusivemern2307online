@@ -5,7 +5,7 @@ import ProductCard from "../../CommonCoponents/ProductCard";
 import { useGetAllProductQuery } from "../../../Features/Api/exclusiveApi";
 const FlashSale = () => {
   const { data, error, isLoading } = useGetAllProductQuery();
-  console.log(data);
+
 
   return (
     <div className="container">
@@ -18,7 +18,7 @@ const FlashSale = () => {
           heading="Today's"
           description="Flash Sales"
           partialItemShow={8}
-          componentData={data?.products}
+          componentData={data?.data}
           isLoading={isLoading}
         />
         <div className="pb-20 ">

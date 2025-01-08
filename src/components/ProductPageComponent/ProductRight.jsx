@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import ProductCard from "../CommonCoponents/ProductCard";
-import { useGetAllProductQuery } from "../../Features/Api/ProductApi";
+import { useGetAllProductQuery } from "../../Features/Api/exclusiveApi";
 const ProductRight = () => {
   const { data, error, isLoading } = useGetAllProductQuery();
-  const [page, setpage] = useState(3);
+  const [page, setpage] = useState(1);
   const [pagePerShow, setpagePerShow] = useState(9);
-  let totalPage = data?.limit / 9;
+  let totalPage = data?.length / 9;
 
   //   pagination funtionality
   const handlePerItem = (index) => {
@@ -28,7 +28,7 @@ const ProductRight = () => {
       </div>
       {/* product */}
       <div className="flex flex-wrap justify-between ">
-        {data?.products?.slice(page * 9 - 9, page * pagePerShow).map((item) => (
+        {data?.data?.slice(page * 9 - 9, page * pagePerShow).map((item) => (
           <div className="w-[30%]">
             <ProductCard itemData={item} />
           </div>

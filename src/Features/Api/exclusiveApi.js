@@ -13,6 +13,9 @@ export const exlusiveApi = createApi({
     GetAllProduct: builder.query({
       query: () => "/product",
     }),
+    GetSingleProduct: builder.query({
+      query: (id) => `/singleproduct/${id}`,
+    }),
   }),
 });
 
@@ -20,4 +23,5 @@ export const {
   useGetAllBannerQuery,
   useGetAllCategoryQuery,
   useGetAllProductQuery,
+  useGetSingleProductQuery,
 } = exlusiveApi;

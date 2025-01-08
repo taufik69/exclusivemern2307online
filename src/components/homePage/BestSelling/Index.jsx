@@ -1,9 +1,9 @@
 import React from "react";
 import ProductCommonLayout from "../../CommonCoponents/ProductCommonLayout";
 import ProductCard from "../../CommonCoponents/ProductCard";
-import { useBestSellingProductQuery } from "../../../Features/Api/ProductApi";
+import { useGetAllProductQuery } from "../../../Features/Api/exclusiveApi";
 const BestSellilng = () => {
-  const { data, error, isLoading } = useBestSellingProductQuery();
+  const { data, error, isLoading } = useGetAllProductQuery();
 
   return (
     <div className="container border-t-[1.5px] border-gray-300">
@@ -12,7 +12,7 @@ const BestSellilng = () => {
         description="Best Selling Products"
         ProductCard={ProductCard}
         partialItemShow={6}
-        componentData={data?.products}
+        componentData={data?.data}
         isLoading={isLoading}
         viewButton={true}
       />
