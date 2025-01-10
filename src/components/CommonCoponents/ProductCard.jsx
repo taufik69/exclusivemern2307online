@@ -5,7 +5,15 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import useCalculateDiscount from "../../hooks/useCalculateDiscount";
 import Star from "./Star";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { addtoCart } from "../../Features/AllSlice/productSlice";
 const ProductCard = ({ itemData }) => {
+  const dispath = useDispatch();
+
+  //  handleaddtoCart fution implement
+  const handleaddtoCart = (item) => {
+    dispath(addtoCart(item));
+  };
   return (
     <div className="mt-10 ">
       <div className="w-full">
@@ -34,7 +42,10 @@ const ProductCard = ({ itemData }) => {
               <MdOutlineRemoveRedEye />
             </span>
           </div>
-          <div className="opacity-0 absolute left-0 bottom-0 font-popins font-medium text-lg cursor-pointer  flex justify-center items-center w-full h-12 bg-text_black000000 text-white_FFFFFF group-hover:opacity-100">
+          <div
+            className="opacity-0 absolute left-0 bottom-0 font-popins font-medium text-lg cursor-pointer  flex justify-center items-center w-full h-12 bg-text_black000000 text-white_FFFFFF group-hover:opacity-100"
+            onClick={() => handleaddtoCart(itemData)}
+          >
             <h3>Add To Cart</h3>
           </div>
         </div>
