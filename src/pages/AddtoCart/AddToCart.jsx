@@ -1,16 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BreadCrumb } from "../../components/CommonCoponents/BreadCrumb.jsx";
 import productOne from "../../../src/assets/cart/p1.png";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { useSelector, useDispatch } from "react-redux";
-import { removeCart } from "../../Features/AllSlice/productSlice.js";
+import {
+  removeCart,
+  incrementCartItem,
+  decrementCartItem,
+  getTotal,
+} from "../../Features/AllSlice/productSlice.js";
 const AddToCart = () => {
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) => state?.proudct?.cart);
+  const { cart, totalItem, totalPrice } = useSelector(
+    (state) => state?.proudct
+  );
 
+  useEffect(() => {
+    dispatch(getTotal());
+  }, [dispatch, localStorage.getItem("cartitem")]);
   //
   const handleRemoveCart = (item) => {
     dispatch(removeCart(item));
+  };
+
+  // incremnty cart item quantitiy
+  const handleIncrement = (item) => {
+    dispatch(incrementCartItem(item));
+  };
+
+  // decrementCartItem funtion implement
+  const handledecrement = (item) => {
+    dispatch(decrementCartItem(item));
   };
   return (
     <div className="my-20">
@@ -42,7 +62,7 @@ const AddToCart = () => {
 
         {/* carti tem */}
         <div className="custom_scrollbar w-full h-[500px] overflow-y-scroll ">
-          {cartItem.map((item) => (
+          {cart?.map((item) => (
             <div className="mb-10" key={item._id}>
               <div className="flex justify-between shadow-lg rounded">
                 <div className="flex-1 py-6  flex justify-start">
@@ -77,10 +97,13 @@ const AddToCart = () => {
                     />
                     <div className="flex flex-col items-center justify-center">
                       <span className="">
-                        <IoIosArrowUp className="inline-block  cursor-pointer" />
+                        <IoIosArrowUp
+                          className="inline-block  cursor-pointer"
+                          onClick={() => handleIncrement(item)}
+                        />
                       </span>
 
-                      <span className="">
+                      <span className="" onClick={() => handledecrement(item)}>
                         <IoIosArrowDown className="inline-block  cursor-pointer" />
                       </span>
                     </div>
@@ -131,26 +154,26 @@ const AddToCart = () => {
               </h1>
 
               <div className="justify-between   relative inline-flex items-center w-full px-4 py-2 font-popins font-normal text-text_black000000 text-[16px border-b border-gray-200 rounded-t-lg hover:bg-gray-100">
-                <button type="button">Subtotal:</button>
+                <button type="button">Total Item:</button>
                 <span className="inline-block font-popins font-normal text-text_black000000 text-[16px]">
                   {" "}
-                  $1750
+                  {totalItem}
                 </span>
               </div>
 
               <div className="justify-between   relative inline-flex items-center w-full px-4 py-2 font-popins font-normal text-text_black000000 text-[16px border-b border-gray-200 rounded-t-lg hover:bg-gray-100">
-                <button type="button">Shipping:</button>
+                <button type="button">Shipping Charge:</button>
                 <span className="inline-block font-popins font-normal text-text_black000000 text-[16px]">
                   {" "}
-                  $1750
+                  $0
                 </span>
               </div>
 
               <div className="justify-between   relative inline-flex items-center w-full px-4 py-2 font-popins font-normal text-text_black000000 text-[16px rounded-t-lg hover:bg-gray-100">
-                <button type="button">Total:</button>
+                <button type="button"> Sub Total:</button>
                 <span className="inline-block font-popins font-normal text-text_black000000 text-[16px]">
                   {" "}
-                  $1750
+                  ${totalPrice}
                 </span>
               </div>
             </div>

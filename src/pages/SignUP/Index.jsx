@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const SignUP = () => {
+  const [singupInfo, setsingupInfo] = useState({
+    FirstName: "",
+    phone: "",
+    Email: "",
+    Password: "",
+    accept: false,
+  });
+
+  const handleChange = (event) => {
+    const { id, value } = event.target;
+    console.log(id);
+  };
   return (
     <div className="my-20">
       {/* <!-- component --> */}
@@ -73,7 +85,11 @@ const SignUP = () => {
                 </p>
               </div>
 
-              <form action="#" class="mt-8 grid grid-cols-6 gap-6">
+              <form
+                action="#"
+                class="mt-8 grid grid-cols-6 gap-6"
+                onSubmit={(e) => e.preventDefault()}
+              >
                 <div class="col-span-6 sm:col-span-3">
                   <label
                     for="FirstName"
@@ -83,6 +99,7 @@ const SignUP = () => {
                   </label>
 
                   <input
+                    onChange={handleChange}
                     type="text"
                     id="FirstName"
                     name="first_name"
@@ -92,17 +109,18 @@ const SignUP = () => {
 
                 <div class="col-span-6 sm:col-span-3">
                   <label
-                    for="LastName"
+                    for="Phone Number"
                     class="block text-sm font-medium text-gray-700"
                   >
-                    Last Name
+                    Phone Number
                   </label>
 
                   <input
-                    type="text"
-                    id="LastName"
+                    type="number"
+                    id="phone"
                     name="last_name"
                     class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                    onChange={handleChange}
                   />
                 </div>
 
@@ -118,6 +136,7 @@ const SignUP = () => {
                   <input
                     type="email"
                     id="Email"
+                    onChange={handleChange}
                     name="email"
                     class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                   />
@@ -135,23 +154,8 @@ const SignUP = () => {
                   <input
                     type="password"
                     id="Password"
+                    onChange={handleChange}
                     name="password"
-                    class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
-                  />
-                </div>
-
-                <div class="col-span-6 sm:col-span-3">
-                  <label
-                    for="PasswordConfirmation"
-                    class="block text-sm font-medium text-gray-700"
-                  >
-                    Password Confirmation
-                  </label>
-
-                  <input
-                    type="password"
-                    id="PasswordConfirmation"
-                    name="password_confirmation"
                     class="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                   />
                 </div>
@@ -160,7 +164,8 @@ const SignUP = () => {
                   <label for="MarketingAccept" class="flex gap-4">
                     <input
                       type="checkbox"
-                      id="MarketingAccept"
+                      id="accept"
+                      onChange={handleChange}
                       name="marketing_accept"
                       class="size-5 rounded-md border-gray-200 bg-white shadow-sm"
                     />
