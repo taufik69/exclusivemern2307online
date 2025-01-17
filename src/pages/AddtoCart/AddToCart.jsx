@@ -32,6 +32,7 @@ const AddToCart = () => {
   const handledecrement = (item) => {
     dispatch(decrementCartItem(item));
   };
+
   return (
     <div className="my-20">
       <div className="container">

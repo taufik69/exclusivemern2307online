@@ -59,7 +59,7 @@ export const productSlice = createSlice({
         (initalItem, item) => {
           const { price, quantity } = item;
           let totalPrice = price * quantity;
-          initalItem.allprice = totalPrice;
+          initalItem.allprice += totalPrice;
           initalItem.allquantity += quantity;
           return initalItem;
         },

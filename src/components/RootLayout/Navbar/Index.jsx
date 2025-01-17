@@ -35,14 +35,18 @@ const Navbar = () => {
     },
   ];
   const [account, setAccount] = useState(false);
-
+  const [totalItemstate, settotalItemstate] = useState(0);
   const handleAccount = () => {
     setAccount(!account);
   };
-
   const { cart, totalItem, totalPrice } = useSelector(
     (state) => state?.proudct
   );
+
+  useEffect(() => {
+    settotalItemstate(totalItem);
+  }, [localStorage.getItem("cartitem")]);
+
   return (
     <div className="pt-10 pb-4 border-b-[2px] border-b-gray-300">
       <div className="container">

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { axiosinsance } from "../../helpers/axios";
+import { infoToast, ToastSucess } from "../../helpers/Toast";
 
 const SignUP = () => {
+  const [loading, setloading] = useState(false);
   const [singupInfo, setsingupInfo] = useState({
     FirstName: "",
     phone: "",
@@ -12,7 +15,33 @@ const SignUP = () => {
 
   const handleChange = (event) => {
     const { id, value } = event.target;
-    console.log(id);
+    setsingupInfo({
+      ...singupInfo,
+      [id]: [id] == "accept" ? true : value,
+    });
+  };
+
+  // handleSignUp funtion implement
+  const handleSignUp = async () => {
+    try {
+      const { FirstName, phone, Email, Password } = singupInfo;
+      setloading(true);
+      const response = await axiosinsance.post("/registration", {
+        firstName: FirstName,
+        email: Email,
+        phoneNumber: phone,
+        password: Password,
+      });
+      const { data } = response;
+
+      ToastSucess(`${FirstName} ${data.message}`);
+      infoToast(`${FirstName} please Check Your Mail`);
+      
+    } catch (error) {
+      console.error("SignUp error :", error);
+    } finally {
+      setloading(false);
+    }
   };
   return (
     <div className="my-20">
@@ -193,9 +222,18 @@ const SignUP = () => {
                 </div>
 
                 <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
-                  <button class="inline-block shrink-0 rounded-md border  bg-redDB4444 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
-                    Create an account
-                  </button>
+                  {loading ? (
+                    <button class="inline-block shrink-0 rounded-md border  bg-redDB4444 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500">
+                      loading ...
+                    </button>
+                  ) : (
+                    <button
+                      class="inline-block shrink-0 rounded-md border  bg-redDB4444 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                      onClick={handleSignUp}
+                    >
+                      Sign Up
+                    </button>
+                  )}
 
                   <p class="mt-4 text-sm text-gray-500 sm:mt-0">
                     Already have an account?
