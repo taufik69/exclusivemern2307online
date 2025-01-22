@@ -3,13 +3,14 @@ import { BreadCrumb } from "../../components/CommonCoponents/BreadCrumb";
 import ImageGallery from "../../components/CommonCoponents/ProductDetails/ImageGallery";
 
 import SpecificProductDetails from "../../components/CommonCoponents/ProductDetails/SpecificProductDetails.jsx";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductDetailsSkeletion from "../../components/Skeletion/ProductDetailsSkeletion.jsx";
 import Heading from "../../components/CommonCoponents/Heading.jsx";
 import Slider from "react-slick";
 import { useGetSingleProductQuery } from "../../Features/Api/exclusiveApi.js";
 import ProductCard from "../../components/CommonCoponents/ProductCard.jsx";
 const ProductDetails = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const { data, error, isLoading } = useGetSingleProductQuery(params?.id);
   /**
@@ -27,7 +28,7 @@ const ProductDetails = () => {
     dots: false,
   };
 
-
+  const realtedProduct = data?.data?.category?.product;
 
   return (
     <div className="py-20">
@@ -53,11 +54,17 @@ const ProductDetails = () => {
         <div className="py-[140px]">
           <Heading title="Related Item" description={false} />
           <Slider {...settings}>
-            {/* {categoryData?.data?.products?.map((item) => (
-              <div className="mx-4">
+            {realtedProduct?.map((item) => (
+              <div
+                className="px-4"
+                key={item._id}
+                onClick={() =>
+                  (window.location.href = `/productdetails/${item._id}`)
+                }
+              >
                 <ProductCard itemData={item} />
               </div>
-            ))} */}
+            ))}
           </Slider>
         </div>
         {/* related product */}

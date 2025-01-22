@@ -5,7 +5,7 @@ const ProductRight = () => {
   const { data, error, isLoading } = useGetAllProductQuery();
   const [page, setpage] = useState(1);
   const [pagePerShow, setpagePerShow] = useState(9);
-  let totalPage = data?.length / 9;
+  let totalPage = data?.data.length / 9;
 
   //   pagination funtionality
   const handlePerItem = (index) => {
@@ -49,7 +49,7 @@ const ProductRight = () => {
               Previous
             </span>
           </li>
-          {[...new Array(Math.ceil(totalPage) || 8)].map((_, index) => (
+          {[...new Array(Math.round(totalPage) || 8)].map((_, index) => (
             <li>
               <span
                 href="#"
