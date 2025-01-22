@@ -3,9 +3,14 @@ import login from "../../../assets/login/login.gif";
 import { useFormik } from "formik";
 import { loginSchema } from "../../../Validation/Schema/LoginSchema";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { axiosinsance } from "../../../helpers/axios";
+import { ToastSucess } from "../../../helpers/Toast";
+
 const Login = () => {
+  const navigate = useNavigate();
   const [eye, setEye] = useState(false);
+  const [loading, setLoading] = useState(false);
   const initialValue = {
     emailorphone: "",
     Password: "",
@@ -13,8 +18,31 @@ const Login = () => {
   const formik = useFormik({
     initialValues: initialValue,
     validationSchema: loginSchema,
-    onSubmit: (value) => {
-      console.log(value);
+    onSubmit: async (value, action) => {
+      try {
+        setLoading(true);
+        const { Password, emailorphone } = value;
+        const response = await axiosinsance.post(
+          "/login",
+          {
+            emailOrPhone: emailorphone,
+            password: Password,
+          },
+          { withCredentials: true }
+        );
+
+        if (response?.statusText == "OK") {
+          ToastSucess(response.data?.data.name + "Login Success");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("errom from login", error);
+      } finally {
+        setLoading(false);
+        action.resetForm();
+      }
     },
   });
   return (
@@ -79,12 +107,22 @@ const Login = () => {
                 ) : null}
 
                 <div className="flex items-center gap-x-[87px] mt-[30px]">
-                  <button
-                    type="submit"
-                    className="py-4 px-[48px] bg-redDB4444 font-popins font-medium text-white_FFFFFF text-[16px] rounded"
-                  >
-                    Log In
-                  </button>
+                  {loading ? (
+                    <button
+                      type="submit"
+                      className="py-4 px-[48px] bg-redDB4444 font-popins font-medium text-white_FFFFFF text-[16px] rounded"
+                    >
+                      Loadin..
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="py-4 px-[48px] bg-redDB4444 font-popins font-medium text-white_FFFFFF text-[16px] rounded"
+                    >
+                      Log In
+                    </button>
+                  )}
+
                   <Link
                     to="/forgotpassword"
                     className="text-redDB4444 font-popins font-medium  text-[16px] cursor-pointer"
