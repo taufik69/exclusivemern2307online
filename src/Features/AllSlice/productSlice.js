@@ -3,9 +3,7 @@ import { ToastSucess, ToastError, infoToast } from "../../helpers/Toast";
 import { act } from "react";
 
 const initialState = {
-  cart: localStorage.getItem("cartitem")
-    ? JSON.parse(localStorage.getItem("cartitem"))
-    : [],
+  cart: [],
   totalPrice: 0,
   totalItem: 0,
 };

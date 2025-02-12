@@ -1,37 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BreadCrumb } from "../../components/CommonCoponents/BreadCrumb.jsx";
-import productOne from "../../../src/assets/cart/p1.png";
+
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  removeCart,
-  incrementCartItem,
-  decrementCartItem,
-  getTotal,
-} from "../../Features/AllSlice/productSlice.js";
+
+import { useGetUserCartItemQuery } from "../../Features/Api/exclusiveApi.js";
+import { Link } from "react-router-dom";
 const AddToCart = () => {
-  const dispatch = useDispatch();
-  const { cart, totalItem, totalPrice } = useSelector(
-    (state) => state?.proudct
-  );
+  const { isLoading, isError, data } = useGetUserCartItemQuery();
 
   useEffect(() => {
-    dispatch(getTotal());
-  }, [dispatch, localStorage.getItem("cartitem")]);
-  //
-  const handleRemoveCart = (item) => {
-    dispatch(removeCart(item));
-  };
+    if (data?.data) {
+      const totalCartItem = data?.data?.reduce(
+        (initialValue, item) => {
+          const { product, qunatity } = item;
+          initialValue.totalPrice += product.price * qunatity;
+          initialValue.totalitem += qunatity;
+          return initialValue;
+        },
+        {
+          totalPrice: 0,
+          totalitem: 0,
+        }
+      );
 
-  // incremnty cart item quantitiy
-  const handleIncrement = (item) => {
-    dispatch(incrementCartItem(item));
-  };
-
-  // decrementCartItem funtion implement
-  const handledecrement = (item) => {
-    dispatch(decrementCartItem(item));
-  };
+      localStorage.setItem("cartData", JSON.stringify(data?.data));
+      localStorage.setItem("cartTotal", JSON.stringify(totalCartItem));
+    }
+  }, [data]);
+  const totalPricefromLocal = localStorage.getItem("cartTotal")
+    ? JSON.parse(localStorage.getItem("cartTotal"))
+    : 0;
 
   return (
     <div className="my-20">
@@ -63,48 +61,42 @@ const AddToCart = () => {
 
         {/* carti tem */}
         <div className="custom_scrollbar w-full h-[500px] overflow-y-scroll ">
-          {cart?.map((item) => (
+          {data?.data?.map((item) => (
             <div className="mb-10" key={item._id}>
               <div className="flex justify-between shadow-lg rounded">
                 <div className="flex-1 py-6  flex justify-start">
                   <div className="flex pl-10 items-center gap-x-5 relative ">
                     <img
-                      src={item.image[0]}
-                      alt={item.image[0]}
+                      src={item.product.image[0] || "image"}
+                      alt={item.product.image[0] || "image"}
                       className="w-[54px] h-[54px] object-contain"
                     />
-                    <span
-                      className="w-[20px] h-[20px] rounded-full bg-redDB4444 absolute text-white_FFFFFF flex justify-center items-center top-[-2%] left-[15%] font-semibold cursor-pointer hover:opacity-70"
-                      onClick={() => handleRemoveCart(item)}
-                    >
+                    <span className="w-[20px] h-[20px] rounded-full bg-redDB4444 absolute text-white_FFFFFF flex justify-center items-center top-[-2%] left-[15%] font-semibold cursor-pointer hover:opacity-70">
                       X
                     </span>
                     <h1 className="text-[16px] font-popins font-normal text-text_black000000 ">
-                      {item.name}
+                      {item.product.name || "Product Name"}
                     </h1>
                   </div>
                 </div>
                 <div className=" flex-1  py-6 flex justify-center">
                   <h1 className="text-[20px] font-popins font-normal text-text_black000000">
-                    ${item.price}
+                    ${item.product.price || "3"}
                   </h1>
                 </div>
                 <div className=" flex-1  py-6 flex   justify-center">
                   <div className="flex items-center justify-center gap-x-3 w-[100px] rounded border border-gray-400">
                     <input
                       type="text"
-                      value={item.quantity}
+                      value={item.qunatity || 1}
                       className=" w-[25px] text-[20px] font-popins font-normal text-text_black000000"
                     />
                     <div className="flex flex-col items-center justify-center">
                       <span className="">
-                        <IoIosArrowUp
-                          className="inline-block  cursor-pointer"
-                          onClick={() => handleIncrement(item)}
-                        />
+                        <IoIosArrowUp className="inline-block  cursor-pointer" />
                       </span>
 
-                      <span className="" onClick={() => handledecrement(item)}>
+                      <span className="">
                         <IoIosArrowDown className="inline-block  cursor-pointer" />
                       </span>
                     </div>
@@ -112,7 +104,7 @@ const AddToCart = () => {
                 </div>
                 <div className=" flex-1 flex justify-end py-6">
                   <h1 className="text-[20px] font-popins font-normal text-text_black000000 pr-10">
-                    ${item.quantity * item.price}
+                    ${item.qunatity * item.product.price || 0}
                   </h1>
                 </div>
               </div>
@@ -158,7 +150,7 @@ const AddToCart = () => {
                 <button type="button">Total Item:</button>
                 <span className="inline-block font-popins font-normal text-text_black000000 text-[16px]">
                   {" "}
-                  {totalItem}
+                  {totalPricefromLocal?.totalCartItem || 9}
                 </span>
               </div>
 
@@ -174,14 +166,17 @@ const AddToCart = () => {
                 <button type="button"> Sub Total:</button>
                 <span className="inline-block font-popins font-normal text-text_black000000 text-[16px]">
                   {" "}
-                  ${totalPrice}
+                  ${totalPricefromLocal?.totalPrice || 89}
                 </span>
               </div>
             </div>
             <div className="w-full  flex justify-center mt-10">
-              <button className="px-[48px] py-[12px] bg-redDB4444  text-white_FFFFFF text-[18px] font-medium font-popins rounded">
+              <Link
+                to="/checkout"
+                className="px-[48px] py-[12px] bg-redDB4444  text-white_FFFFFF text-[18px] font-medium font-popins rounded"
+              >
                 Procees to checkout
-              </button>
+              </Link>
             </div>
           </div>
         </div>

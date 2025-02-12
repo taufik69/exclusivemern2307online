@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Star from "../../CommonCoponents/Star";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { TbTruckDelivery } from "react-icons/tb";
 import useCalculateDiscount from "../../../hooks/useCalculateDiscount";
+import { useAddToCartMutation } from "../../../Features/Api/exclusiveApi";
+import { useParams } from "react-router-dom";
+import { ToastSucess } from "../../../helpers/Toast";
 const SpecificProductDetails = ({ ProductDetailsData }) => {
+  const [count, setcount] = useState(1);
+  const { id } = useParams();
+
   const {
     name,
     description,
@@ -24,6 +30,24 @@ const SpecificProductDetails = ({ ProductDetailsData }) => {
     { id: 4, size: "L" },
     { id: 5, size: "XL" },
   ];
+
+  const [addToCart, { isLoading }] = useAddToCartMutation();
+
+  const handleaddtoCart = async () => {
+    try {
+      const data = {
+        product: id ? id : "",
+        qunatity: count,
+      };
+      const resposne = await addToCart(data);
+      if (resposne.data) {
+        ToastSucess("Add To Cart Sucessfull");
+      }
+    } catch (error) {
+      console.error("error from product details add to cart portion", error);
+    }
+  };
+
   return (
     <div>
       <div className="">
@@ -88,20 +112,35 @@ const SpecificProductDetails = ({ ProductDetailsData }) => {
         {/* button */}
         <div className="mt-10 flex items-center  gap-x-4">
           <div className="flex items-center">
-            <span className="px-4 py-2 border-2 border-gray-300 rounded-l-lg text-[20px] font-popins text-text_black000000 cursor-pointer hover:bg-redDB4444 hover:text-white_FFFFFF">
+            <span
+              className="px-4 py-2 border-2 border-gray-300 rounded-l-lg text-[20px] font-popins text-text_black000000 cursor-pointer hover:bg-redDB4444 hover:text-white_FFFFFF"
+              onClick={() => setcount(count - 1)}
+            >
               -
             </span>
             <span className="px-6 py-2 border-2 border-gray-300  text-[20px] font-popins text-text_black000000 border-l-0 cursor-pointer hover:bg-redDB4444 hover:text-white_FFFFFF">
-              2
+              {count}
             </span>
-            <span className="px-4 py-2 border-2 border-gray-300 rounded-r-lg text-[20px] font-popins text-text_black000000 border-l-0 cursor-pointer hover:bg-redDB4444 hover:text-white_FFFFFF">
+            <span
+              className="px-4 py-2 border-2 border-gray-300 rounded-r-lg text-[20px] font-popins text-text_black000000 border-l-0 cursor-pointer hover:bg-redDB4444 hover:text-white_FFFFFF"
+              onClick={() => setcount(count + 1)}
+            >
               +
             </span>
           </div>
 
-          <button className="py-[12px] px-[48px] bg-redDB4444 rounded-[5px] border-none font-popins font-medium text-white_FFFFFF text-[16px]">
-            Buy Now
-          </button>
+          {isLoading ? (
+            <button className="py-[12px] px-[48px] bg-redDB4444 rounded-[5px] border-none font-popins font-medium text-white_FFFFFF text-[16px]">
+              Loading ...
+            </button>
+          ) : (
+            <button
+              className="py-[12px] px-[48px] bg-redDB4444 rounded-[5px] border-none font-popins font-medium text-white_FFFFFF text-[16px]"
+              onClick={handleaddtoCart}
+            >
+              Add To Cart
+            </button>
+          )}
 
           <div className="border-2 border-x-gray-300 rounded  py-1 px-3 cursor-pointer hover:bg-red-500 hover:text-white_FFFFFF ">
             <span className="inline-block text-3xl font-bold  font-popins  w-full h-full ">

@@ -2,7 +2,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const exlusiveApi = createApi({
   reducerPath: "exlusive",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:4000/api/v1" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:4000/api/v1",
+    withCredentials: true,
+    credentials: "include",
+  }),
   endpoints: (builder) => ({
     GetAllBanner: builder.query({
       query: () => `/banner`,
@@ -16,6 +20,17 @@ export const exlusiveApi = createApi({
     GetSingleProduct: builder.query({
       query: (id) => `/singleproduct/${id}`,
     }),
+    AddToCart: builder.mutation({
+      query: (bodyObject) => ({
+        url: `/addtocart`,
+        method: "post",
+        body: bodyObject,
+      }),
+    }),
+
+    getUserCartItem: builder.query({
+      query: () => `/useritem`,
+    }),
   }),
 });
 
@@ -24,4 +39,6 @@ export const {
   useGetAllCategoryQuery,
   useGetAllProductQuery,
   useGetSingleProductQuery,
+  useAddToCartMutation,
+  useGetUserCartItemQuery,
 } = exlusiveApi;

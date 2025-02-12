@@ -31,11 +31,11 @@ const Login = () => {
           { withCredentials: true }
         );
 
-        if (response?.statusText == "OK") {
+        if (response?.data) {
           ToastSucess(response.data?.data.name + "Login Success");
           setTimeout(() => {
             navigate("/");
-          }, 2000);
+          }, 1000);
         }
       } catch (error) {
         console.error("errom from login", error);

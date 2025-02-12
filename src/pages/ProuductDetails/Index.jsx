@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BreadCrumb } from "../../components/CommonCoponents/BreadCrumb";
 import ImageGallery from "../../components/CommonCoponents/ProductDetails/ImageGallery";
 
@@ -12,7 +12,9 @@ import ProductCard from "../../components/CommonCoponents/ProductCard.jsx";
 const ProductDetails = () => {
   const navigate = useNavigate();
   const params = useParams();
+
   const { data, error, isLoading } = useGetSingleProductQuery(params?.id);
+
   /**
    * todo : useGetProductByCategoryQuery query invoked
    */
