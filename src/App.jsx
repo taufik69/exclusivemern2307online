@@ -22,6 +22,7 @@ import ForgotPassword from "./pages/ForgotPassword/Index";
 import Otp from "./pages/OtpVerify/Index";
 import ResetPasswod from "./pages/ResetPassword/Index";
 import Checkout from "./pages/Checkout/Checkout";
+import PaymentSucess from "./pages/PayementSucess/PaymentSucess";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
         <Route path="/resetpassword/:email" element={<ResetPasswod />} />
         <Route path="/verifyotp/:email" element={<Otp />} />
         <Route path="/checkout" element={<Checkout/>} />
+        <Route path="/paymentSucess" element={<PaymentSucess/>} />
       </Route>
     </Route>
   )

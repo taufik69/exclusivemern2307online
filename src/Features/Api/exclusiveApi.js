@@ -7,6 +7,7 @@ export const exlusiveApi = createApi({
     withCredentials: true,
     credentials: "include",
   }),
+  tagTypes: ["cart"],
   endpoints: (builder) => ({
     GetAllBanner: builder.query({
       query: () => `/banner`,
@@ -27,14 +28,32 @@ export const exlusiveApi = createApi({
         body: bodyObject,
       }),
     }),
+    RemoveCart: builder.mutation({
+      query: (id) => ({
+        url: `/addtocart/${id}`,
+        method: "delete",
+      }),
+      invalidatesTags: ["cart"],
+    }),
 
     getUserCartItem: builder.query({
       query: () => `/useritem`,
+      providesTags: ["cart"],
+    }),
+
+    placeOrder: builder.mutation({
+      query: (customerinformation) => ({
+        url: `/placeorder`,
+        method: "post",
+        body: customerinformation,
+      }),
     }),
   }),
 });
 
 export const {
+  usePlaceOrderMutation,
+  useRemoveCartMutation,
   useGetAllBannerQuery,
   useGetAllCategoryQuery,
   useGetAllProductQuery,

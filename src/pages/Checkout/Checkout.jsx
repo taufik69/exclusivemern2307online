@@ -1,8 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
+import { usePlaceOrderMutation } from "../../Features/Api/exclusiveApi";
+import { use } from "react";
 
 const Checkout = () => {
   const cartTotal = JSON.parse(localStorage.getItem("cartTotal"));
   const cartData = JSON.parse(localStorage.getItem("cartData"));
+  const [placeOrder, { isLoading, isError }] = usePlaceOrderMutation();
+  const [userinfo, setuserinfo] = useState({
+    firstName: cartData[0].user.firstName,
+    lastName: "",
+    email: cartData[0].user.email,
+    phoneNumber: cartData[0].user.phoneNumber,
+    adress1: "",
+    adress2: "",
+    city: "",
+    district: "",
+    postcode: 0,
+    payementmethod: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setuserinfo({
+      ...userinfo,
+      [name]: value,
+    });
+  };
+
+  const handleplaceOrder = async () => {
+    try {
+      const userBillingInfo = {
+        customerInfo: {
+          firstName: userinfo.firstName,
+          lastName: userinfo.lastName,
+          email: userinfo.email,
+          phoneNumber: parseInt(userinfo.phoneNumber),
+          adress1: userinfo.adress1,
+          adress2: userinfo.adress2,
+          city: userinfo.city,
+          district: userinfo.district || "Dhaka",
+          postcode: userinfo.postcode || 10001,
+        },
+        payemntinfo: {
+          payementmethod: userinfo.payementmethod,
+        },
+      };
+      const response = await placeOrder(userBillingInfo);
+      if (response.data) {
+        window.location.href = response.data.sslUrl;
+      }
+    } catch (error) {
+      console.error("Error in placing order", error);
+    }
+  };
 
   return (
     <div className="container py-4">
@@ -57,7 +107,7 @@ const Checkout = () => {
             <h2 class="text-2xl font-bold text-gray-800">
               Complete your order
             </h2>
-            <form class="mt-8">
+            <form class="mt-8" onSubmit={(e) => e.preventDefault()}>
               <div>
                 <h3 class="text-sm lg:text-base text-gray-800 mb-4">
                   Personal Details
@@ -67,6 +117,9 @@ const Checkout = () => {
                     <input
                       type="text"
                       placeholder="First Name"
+                      value={userinfo.firstName}
+                      onChange={handleChange}
+                      name="firstName"
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
                   </div>
@@ -75,6 +128,9 @@ const Checkout = () => {
                     <input
                       type="text"
                       placeholder="Last Name"
+                      value={userinfo.lastName}
+                      name="lastName"
+                      onChange={handleChange}
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
                   </div>
@@ -82,7 +138,10 @@ const Checkout = () => {
                   <div>
                     <input
                       type="email"
+                      name="email"
+                      value={userinfo.email}
                       placeholder="Email"
+                      onChange={handleChange}
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
                   </div>
@@ -90,6 +149,9 @@ const Checkout = () => {
                   <div>
                     <input
                       type="number"
+                      name="phoneNumber"
+                      value={userinfo.phoneNumber}
+                      onChange={handleChange}
                       placeholder="Phone No."
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
@@ -105,6 +167,9 @@ const Checkout = () => {
                   <div>
                     <input
                       type="text"
+                      name="adress1"
+                      value={userinfo.adress1}
+                      onChange={handleChange}
                       placeholder="Address Line"
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
@@ -112,6 +177,19 @@ const Checkout = () => {
                   <div>
                     <input
                       type="text"
+                      value={userinfo.adress2}
+                      name="adress2"
+                      onChange={handleChange}
+                      placeholder="Address Line 2"
+                      class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="city"
+                      value={userinfo.city}
+                      onChange={handleChange}
                       placeholder="City"
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
@@ -119,14 +197,20 @@ const Checkout = () => {
                   <div>
                     <input
                       type="text"
-                      placeholder="State"
+                      value={userinfo.district}
+                      onChange={handleChange}
+                      name="district"
+                      placeholder="District"
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
                   </div>
                   <div>
                     <input
                       type="text"
-                      placeholder="Zip Code"
+                      onChange={handleChange}
+                      value={userinfo.postcode}
+                      name="postcode"
+                      placeholder="postal Code"
                       class="px-4 py-3 bg-gray-100 focus:bg-transparent text-gray-800 w-full text-sm rounded-md focus:outline-blue-600"
                     />
                   </div>
@@ -135,15 +219,30 @@ const Checkout = () => {
                 <div class="flex gap-4 max-md:flex-col mt-8">
                   <button
                     type="button"
+                    onClick={() =>
+                      setuserinfo({ ...userinfo, payementmethod: "cash" })
+                    }
                     class="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 max-md:order-1"
                   >
-                    Cancel
+                    Cash On Delivery
                   </button>
                   <button
                     type="button"
+                    onClick={() =>
+                      setuserinfo({ ...userinfo, payementmethod: "online" })
+                    }
+                    class="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-green-500 hover:bg-blue-700 text-white"
+                  >
+                    Pay Now Online
+                  </button>
+                </div>
+                <div className=" mt-5">
+                  <button
+                    onClick={handleplaceOrder}
+                    type="button"
                     class="rounded-md px-4 py-2.5 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Complete Purchase
+                    place Order
                   </button>
                 </div>
               </div>

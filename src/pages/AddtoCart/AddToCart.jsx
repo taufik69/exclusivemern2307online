@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { BreadCrumb } from "../../components/CommonCoponents/BreadCrumb.jsx";
-
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-
-import { useGetUserCartItemQuery } from "../../Features/Api/exclusiveApi.js";
+import {
+  useGetUserCartItemQuery,
+  useRemoveCartMutation,
+} from "../../Features/Api/exclusiveApi.js";
 import { Link } from "react-router-dom";
+import { ToastSucess } from "../../helpers/Toast.js";
 const AddToCart = () => {
   const { isLoading, isError, data } = useGetUserCartItemQuery();
+  const [RemoveCart, { isLoading: removeLoading }] = useRemoveCartMutation();
 
   useEffect(() => {
     if (data?.data) {
@@ -30,6 +33,18 @@ const AddToCart = () => {
   const totalPricefromLocal = localStorage.getItem("cartTotal")
     ? JSON.parse(localStorage.getItem("cartTotal"))
     : 0;
+
+  // handleRemoveCart function
+  const handleRemoveCart = async (id) => {
+    try {
+      const response = await RemoveCart(id);
+      if (response?.data?.data) {
+        ToastSucess("Item Removed Successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="my-20">
@@ -71,7 +86,10 @@ const AddToCart = () => {
                       alt={item.product.image[0] || "image"}
                       className="w-[54px] h-[54px] object-contain"
                     />
-                    <span className="w-[20px] h-[20px] rounded-full bg-redDB4444 absolute text-white_FFFFFF flex justify-center items-center top-[-2%] left-[15%] font-semibold cursor-pointer hover:opacity-70">
+                    <span
+                      className="w-[20px] h-[20px] rounded-full bg-redDB4444 absolute text-white_FFFFFF flex justify-center items-center top-[-2%] left-[15%] font-semibold cursor-pointer hover:opacity-70"
+                      onClick={() => handleRemoveCart(item._id)}
+                    >
                       X
                     </span>
                     <h1 className="text-[16px] font-popins font-normal text-text_black000000 ">
